@@ -40,7 +40,9 @@
             "@php artisan package:discover --ansi",
             "@php artisan filament:upgrade",
             "@php artisan filament:install --ansi",
-             "@php artisan migrate:fresh --seed --ansi",
+            "@php artisan vendor:publish --provider=\"Spatie\\Activitylog\\ActivitylogServiceProvider\" --tag=\"activitylog-migrations\"",
+
+            "@php artisan migrate:fresh --seed --ansi",
             "@php artisan test --parallel"
         ],
         "post-update-cmd": [
