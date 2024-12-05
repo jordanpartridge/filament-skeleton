@@ -21,8 +21,33 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // Icon from Heroicons
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    // Group in sidebar
+    protected static ?string $navigationGroup = 'User Management';
+
+    // Custom label in sidebar
+    protected static ?string $navigationLabel = 'Users';
+
+    // Order in the sidebar (lower numbers appear first)
+    protected static ?int $navigationSort = 1;
+
+    // Labels used throughout the resource
+    protected static ?string $modelLabel = 'User';
+    protected static ?string $pluralModelLabel = 'Users';
+
+    // Dynamic badge showing total users
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    // Badge color (optional)
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 10 ? 'warning' : 'primary';
+    }
     public static function form(Form $form): Form
     {
         return User::form($form);
