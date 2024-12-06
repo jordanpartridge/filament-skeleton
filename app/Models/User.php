@@ -71,11 +71,14 @@ class User extends Authenticatable implements FilamentUser
                     ->schema([
                         TextInput::make('password')
                             ->password()
-                            ->required(fn(string $context): bool => $context === 'create'),
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->required(fn (string $context): bool => $context === 'create')
+                            ->rule(Password::default()),
 
                         TextInput::make('password_confirmation')
                             ->password()
-                            ->required(fn(string $context): bool => $context === 'create')
+                            ->required(fn (string $context): bool => $context === 'create')
+                            ->dehydrated(fn ($state) => filled($state))
                             ->same('password'),
                     ]),
             ]);
