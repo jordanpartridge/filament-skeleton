@@ -1,8 +1,12 @@
 <?php
 
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
 use function Pest\Laravel\actingAs;
 
+beforeEach(function () {
+    $this->seed(PermissionSeeder::class);
+});
 it('can visit root', function () {
     $response = $this->get('/');
 
