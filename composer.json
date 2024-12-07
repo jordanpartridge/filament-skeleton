@@ -39,8 +39,9 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
+            "@php artisan key:generate --ansi",
             "@php artisan filament:upgrade",
-            "@php artisan filament:install --ansi",
+            "@php artisan filament:install --ansi --no-interaction",
             "@php artisan migrate --ansi",
             "@php artisan test --parallel"
         ],
