@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Concerns\LogsFillable;
 use Database\Factories\UserFactory;
 use Filament\Forms\Components\Section;
@@ -15,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -22,7 +22,7 @@ class User extends Authenticatable implements FilamentUser
      * @use HasFactory<UserFactory>
      */
     use HasFactory;
-
+    use HasRoles;
     use LogsActivity;
     use LogsFillable;
     use Notifiable;
