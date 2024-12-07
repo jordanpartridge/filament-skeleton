@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use App\Filament\Widgets\UserStatsWidget;
+use App\Filament\Resources\UserResource\Widgets\UserStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 

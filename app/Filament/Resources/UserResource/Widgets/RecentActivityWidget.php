@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\UserResource\Widgets;
 
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Models\Activity;
 
 class RecentActivityWidget extends BaseWidget
