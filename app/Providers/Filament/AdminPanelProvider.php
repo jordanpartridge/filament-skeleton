@@ -2,8 +2,17 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Pulse;
+use App\Filament\Pages\PulseDashboard;
 use App\Filament\Widgets\RecentActivityWidget;
-use App\Models\User;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseServers;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseSlowOutGoingRequests;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseSlowQueries;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseSlowRequests;
+use Dotswan\FilamentLaravelPulse\Widgets\PulseUsage;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -12,7 +21,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,7 +47,6 @@ class AdminPanelProvider extends PanelProvider
                             "<x-login-link class='bg-white dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors duration-300 rounded-lg shadow-sm hover:shadow-md' />");
 
 
-
                     }
                     return null;
                 })
@@ -51,10 +58,19 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                PulseDashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                RecentActivityWidget::class
+                PulseServers::class,
+                PulseCache::class,
+                PulseExceptions::class,
+                PulseUsage::class,
+                PulseQueues::class,
+                PulseSlowQueries::class,
+                PulseSlowRequests::class,
+                PulseSlowOutGoingRequests::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
