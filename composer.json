@@ -50,6 +50,7 @@
             "@php artisan filament:upgrade",
             "@php artisan filament:install --ansi --no-interaction",
             "@php artisan migrate --ansi",
+            "@npm run dev",
             "@php artisan test --parallel",
             "@php -r \"system('herd open');\""
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "25b2e22c1664710dc76c650e2fcc8027",
+    "content-hash": "3c0563fb67b43c033b5d9e733b69a2b9",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -852,16 +852,16 @@
         },
         {
             "name": "doctrine/sql-formatter",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/sql-formatter.git",
-                "reference": "b784cbde727cf806721451dde40eff4fec3bbe86"
+                "reference": "d6d00aba6fd2957fe5216fe2b7673e9985db20c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/sql-formatter/zipball/b784cbde727cf806721451dde40eff4fec3bbe86",
-                "reference": "b784cbde727cf806721451dde40eff4fec3bbe86",
+                "url": "https://api.github.com/repos/doctrine/sql-formatter/zipball/d6d00aba6fd2957fe5216fe2b7673e9985db20c8",
+                "reference": "d6d00aba6fd2957fe5216fe2b7673e9985db20c8",
                 "shasum": ""
             },
             "require": {
@@ -871,8 +871,7 @@
                 "doctrine/coding-standard": "^12",
                 "ergebnis/phpunit-slow-test-detector": "^2.14",
                 "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^10.5",
-                "vimeo/psalm": "^5.24"
+                "phpunit/phpunit": "^10.5"
             },
             "bin": [
                 "bin/sql-formatter"
@@ -902,27 +901,27 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/sql-formatter/issues",
-                "source": "https://github.com/doctrine/sql-formatter/tree/1.5.1"
+                "source": "https://github.com/doctrine/sql-formatter/tree/1.5.2"
             },
-            "time": "2024-10-21T18:21:57+00:00"
+            "time": "2025-01-24T11:45:48+00:00"
         },
         {
             "name": "dotswan/filament-laravel-pulse",
-            "version": "v1.1.1",
+            "version": "v1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dotswan/filament-laravel-pulse.git",
-                "reference": "580aff162ad3f443a0012b2de2cc827ef72da8e9"
+                "reference": "9fbf04511c2407332b1f6da2b5d8c67e3104067f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dotswan/filament-laravel-pulse/zipball/580aff162ad3f443a0012b2de2cc827ef72da8e9",
-                "reference": "580aff162ad3f443a0012b2de2cc827ef72da8e9",
+                "url": "https://api.github.com/repos/dotswan/filament-laravel-pulse/zipball/9fbf04511c2407332b1f6da2b5d8c67e3104067f",
+                "reference": "9fbf04511c2407332b1f6da2b5d8c67e3104067f",
                 "shasum": ""
             },
             "require": {
                 "filament/filament": "^3.0",
-                "illuminate/contracts": "^10.0 || ^11.0",
+                "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
                 "laravel/pulse": "^1.2.3",
                 "php": "^8.2",
                 "spatie/laravel-package-tools": "^1.15.0"
@@ -931,23 +930,23 @@
                 "laravel/pint": "^1.0",
                 "nunomaduro/collision": "^7.9",
                 "nunomaduro/larastan": "^2.0.1",
-                "orchestra/testbench": "^8.0",
-                "pestphp/pest": "^2.0",
-                "pestphp/pest-plugin-arch": "^2.0",
-                "pestphp/pest-plugin-laravel": "^2.0",
+                "orchestra/testbench": "^8.0 || ^10.0",
+                "pestphp/pest": "^2.0 || ^3.7",
+                "pestphp/pest-plugin-arch": "^2.0 || ^3.0",
+                "pestphp/pest-plugin-laravel": "^2.0 || ^3.1",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0"
+                "phpstan/phpstan-deprecation-rules": "^1.0 || ^2.0",
+                "phpstan/phpstan-phpunit": "^1.0 || ^2.0"
             },
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Dotswan\\FilamentLaravelPulse\\FilamentLaravelPulseServiceProvider"
-                    ],
                     "aliases": {
                         "FilamentLaravelPulse": "Dotswan\\FilamentLaravelPulse\\Facades\\FilamentLaravelPulse"
-                    }
+                    },
+                    "providers": [
+                        "Dotswan\\FilamentLaravelPulse\\FilamentLaravelPulseServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -977,7 +976,7 @@
                 "issues": "https://github.com/dotswan/filament-laravel-pulse/issues",
                 "source": "https://github.com/dotswan/filament-laravel-pulse"
             },
-            "time": "2024-08-12T11:15:31+00:00"
+            "time": "2025-02-26T06:44:37+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -2426,34 +2425,34 @@
         },
         {
             "name": "laravel/pulse",
-            "version": "v1.2.7",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pulse.git",
-                "reference": "225c02a4f7e9a6a99b48138305f9749a39443672"
+                "reference": "62099ede70df2272544f0c0657eda0c73d25a6b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pulse/zipball/225c02a4f7e9a6a99b48138305f9749a39443672",
-                "reference": "225c02a4f7e9a6a99b48138305f9749a39443672",
+                "url": "https://api.github.com/repos/laravel/pulse/zipball/62099ede70df2272544f0c0657eda0c73d25a6b2",
+                "reference": "62099ede70df2272544f0c0657eda0c73d25a6b2",
                 "shasum": ""
             },
             "require": {
                 "doctrine/sql-formatter": "^1.4.1",
                 "guzzlehttp/promises": "^1.0|^2.0",
-                "illuminate/auth": "^10.48.4|^11.0.8",
-                "illuminate/cache": "^10.48.4|^11.0.8",
-                "illuminate/config": "^10.48.4|^11.0.8",
-                "illuminate/console": "^10.48.4|^11.0.8",
-                "illuminate/contracts": "^10.48.4|^11.0.8",
-                "illuminate/database": "^10.48.4|^11.0.8",
-                "illuminate/events": "^10.48.4|^11.0.8",
-                "illuminate/http": "^10.48.4|^11.0.8",
-                "illuminate/queue": "^10.48.4|^11.0.8",
-                "illuminate/redis": "^10.48.4|^11.0.8",
-                "illuminate/routing": "^10.48.4|^11.0.8",
-                "illuminate/support": "^10.48.4|^11.0.8",
-                "illuminate/view": "^10.48.4|^11.0.8",
+                "illuminate/auth": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/cache": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/config": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/console": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/contracts": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/database": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/events": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/http": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/queue": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/redis": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/routing": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/support": "^10.48.4|^11.0.8|^12.0",
+                "illuminate/view": "^10.48.4|^11.0.8|^12.0",
                 "livewire/livewire": "^3.4.9",
                 "nesbot/carbon": "^2.67|^3.0",
                 "php": "^8.1",
@@ -2465,7 +2464,7 @@
             "require-dev": {
                 "guzzlehttp/guzzle": "^7.7",
                 "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^8.23.1|^9.0",
+                "orchestra/testbench": "^8.23.1|^9.0|^10.0",
                 "pestphp/pest": "^2.0",
                 "pestphp/pest-plugin-laravel": "^2.2",
                 "phpstan/phpstan": "^1.11",
@@ -2509,7 +2508,7 @@
                 "issues": "https://github.com/laravel/pulse/issues",
                 "source": "https://github.com/laravel/pulse"
             },
-            "time": "2024-11-25T23:03:41+00:00"
+            "time": "2025-02-11T13:36:44+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -5384,30 +5383,30 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "6.10.1",
+            "version": "6.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "8bb69d6d67387f7a00d93a2f5fab98860f06e704"
+                "reference": "4fa03c06509e037a4d42c131d0f181e3e4bbd483"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/8bb69d6d67387f7a00d93a2f5fab98860f06e704",
-                "reference": "8bb69d6d67387f7a00d93a2f5fab98860f06e704",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/4fa03c06509e037a4d42c131d0f181e3e4bbd483",
+                "reference": "4fa03c06509e037a4d42c131d0f181e3e4bbd483",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "^8.12|^9.0|^10.0|^11.0",
-                "illuminate/container": "^8.12|^9.0|^10.0|^11.0",
-                "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0",
-                "illuminate/database": "^8.12|^9.0|^10.0|^11.0",
+                "illuminate/auth": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/container": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/database": "^8.12|^9.0|^10.0|^11.0|^12.0",
                 "php": "^8.0"
             },
             "require-dev": {
-                "larastan/larastan": "^1.0|^2.0",
                 "laravel/passport": "^11.0|^12.0",
-                "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0",
-                "phpunit/phpunit": "^9.4|^10.1"
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.4|^10.1|^11.5"
             },
             "type": "library",
             "extra": {
@@ -5455,7 +5454,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-permission/issues",
-                "source": "https://github.com/spatie/laravel-permission/tree/6.10.1"
+                "source": "https://github.com/spatie/laravel-permission/tree/6.16.0"
             },
             "funding": [
                 {
@@ -5463,7 +5462,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-08T18:45:41+00:00"
+            "time": "2025-02-28T20:29:57+00:00"
         },
         {
             "name": "symfony/clock",
