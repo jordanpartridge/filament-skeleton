@@ -7,7 +7,6 @@ use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUserActivities;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
@@ -35,6 +34,7 @@ class UserResource extends Resource
 
     // Labels used throughout the resource
     protected static ?string $modelLabel = 'User';
+
     protected static ?string $pluralModelLabel = 'Users';
 
     // Dynamic badge showing total users
@@ -48,6 +48,7 @@ class UserResource extends Resource
     {
         return static::getModel()::count() > 10 ? 'warning' : 'primary';
     }
+
     public static function form(Form $form): Form
     {
         return User::form($form);
@@ -65,7 +66,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
-                Action::make('activities')->url(fn($record) => UserResource::getUrl('activities', ['record' => $record])),
+                Action::make('activities')->url(fn ($record) => UserResource::getUrl('activities', ['record' => $record])),
 
             ])
             ->bulkActions([
@@ -85,9 +86,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'      => ListUsers::route('/'),
-            'create'     => CreateUser::route('/create'),
-            'edit'       => EditUser::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
             'activities' => ListUserActivities::route('/{record}/activities'),
 
         ];

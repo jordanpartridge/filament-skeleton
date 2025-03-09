@@ -26,12 +26,12 @@ it('can visit dashboard', function () {
 
 it('can visit edit user', function () {
     $this->actingAs($user = User::factory()->create());
-    $response = $this->get('/admin/users/' . $user->id . '/edit');
+    $response = $this->get('/admin/users/'.$user->id.'/edit');
     $response->assertStatus(200);
 });
 
 it('can view user activity', function () {
     $this->actingAs($user = User::factory()->create());
-    $response = $this->get('/admin/users/' . $user->id . '/activities');
+    $response = $this->get('/admin/users/'.$user->id.'/activities');
     $response->assertStatus(200);
 });

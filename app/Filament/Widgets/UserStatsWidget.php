@@ -26,7 +26,7 @@ class UserStatsWidget extends BaseWidget
                 ->chart([3, 2, 4, 3, 4, 2, 3]),
 
             Stat::make('Average Users per Month', number_format(User::count() / max(1, now()->month)))
-                ->description('Monthly average for ' . date('Y'))
+                ->description('Monthly average for '.date('Y'))
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('info')
                 ->chart([2, 3, 4, 3, 4, 2, 3]),
