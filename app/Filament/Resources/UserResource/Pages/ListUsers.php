@@ -7,8 +7,7 @@ use App\Filament\Widgets\UserStatsWidget;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
-class
-ListUsers extends ListRecords
+class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 
@@ -18,6 +17,7 @@ ListUsers extends ListRecords
             UserStatsWidget::class,
         ];
     }
+
     protected function getHeaderActions(): array
     {
         return [
