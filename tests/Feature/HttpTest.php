@@ -2,6 +2,9 @@
 
 use App\Models\User;
 
+beforeEach(function () {
+    $this->seed(PermissionSeeder::class);
+});
 it('can visit root', function () {
     $response = $this->get('/');
 
