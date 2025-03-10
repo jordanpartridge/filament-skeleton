@@ -27,6 +27,21 @@ class UserSignupChartWidget extends ChartWidget
             ->groupBy('date')
             ->get();
         
+        // Add error handling for when no users are found
+        if ($users->isEmpty()) {
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'New Users',
+                        'data' => [],
+                        'backgroundColor' => '#36A2EB',
+                        'borderColor' => '#2196F3',
+                    ],
+                ],
+                'labels' => [],
+            ];
+        }
+        
         // Prepare data structure for the chart
         return [
             'datasets' => [
