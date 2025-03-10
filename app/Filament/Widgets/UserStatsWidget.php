@@ -8,8 +8,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UserStatsWidget extends BaseWidget
 {
+    // Auto-refresh every 30 seconds
     protected static ?string $pollingInterval = '30s';
-
+    
+    // Make it full width across all columns
+    protected int|string|array $columnSpan = 'full';
+    
     protected function getStats(): array
     {
         return [

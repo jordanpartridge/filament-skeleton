@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Config;
 use Database\Seeders\PermissionSeeder;
 
 beforeEach(function () {
-    // Disable teams for permissions during tests
-    Config::set('permission.teams', false);
+    // For SQLite in-memory testing, make sure team_id is nullable
+    if (config('database.default') === 'sqlite') {
+        Config::set('permission.teams', false);
+    }
     
     // Run the permission seeder
     $this->seed(PermissionSeeder::class);
