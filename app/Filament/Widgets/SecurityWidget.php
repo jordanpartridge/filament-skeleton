@@ -142,7 +142,7 @@ class SecurityWidget extends BaseWidget
             ];
         }
         
-        if (!$checks['https'] && app()->environment() === 'production') {
+        if (!$checks['https'] && $checks['environment']) {
             $result = [
                 'status' => 'Danger',
                 'description' => 'HTTPS not enabled',
