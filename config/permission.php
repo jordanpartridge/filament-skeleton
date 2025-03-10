@@ -121,6 +121,12 @@ return [
      */
 
     'teams' => true,
+    
+    /*
+     * When set to true, the required teams feature will be auto-enabled
+     * when running tests without requiring teams to be explicitly set up.
+     */
+    'testing' => true,
 
     /*
      * Passport Client Credentials Grant

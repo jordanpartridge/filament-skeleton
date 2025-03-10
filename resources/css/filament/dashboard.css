@@ -1,0 +1,28 @@
+/* Custom Dashboard Styles */
+
+/* Improve widget card styling */
+.fi-wi {
+    @apply rounded-xl shadow-md transition-all duration-300 hover:shadow-lg;
+}
+
+/* Enhance stats overview cards */
+.fi-so-card {
+    @apply rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden;
+}
+
+/* Improve table widget appearance */
+.fi-ta {
+    @apply rounded-xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-800;
+}
+
+/* Fix dashboard grid spacing */
+.fi-dashboard-widgets {
+    @apply gap-6 !important;
+}
+
+/* Improve responsive layout */
+@media (max-width: 640px) {
+    .fi-dashboard-widgets {
+        @apply grid-cols-1 !important;
+    }
+}

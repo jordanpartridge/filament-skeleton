@@ -21,6 +21,17 @@ class PulseDashboard extends Dashboard
 {
     use HasFiltersAction;
 
+    // Set the route path
+    protected static string $routePath = '/pulse';
+    
+    // Set a proper title for the page
+    protected static ?string $title = 'Application Performance';
+    
+    // Set a proper navigation label
+    protected static ?string $navigationLabel = 'Performance';
+    
+    // Set proper navigation icon
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     public static function canAccess(): bool
     {
@@ -28,9 +39,17 @@ class PulseDashboard extends Dashboard
         return $user->hasPermissionTo('view pulse');
     }
 
+    // Improve the column layout for better responsiveness
     public function getColumns(): int|string|array
     {
-        return 12;
+        return [
+            'default' => 1,
+            'sm' => 2,
+            'md' => 6,
+            'lg' => 12,
+            'xl' => 12,
+            '2xl' => 12,
+        ];
     }
 
     protected function getHeaderActions(): array
@@ -38,16 +57,19 @@ class PulseDashboard extends Dashboard
         return [
             ActionGroup::make([
                 Action::make('1h')
-                    ->action(fn() => $this->redirect(route('filament.manager.pages.dashboard'))),
+                    ->label('Last Hour')
+                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard'))),
                 Action::make('24h')
-                    ->action(fn() => $this->redirect(route('filament.manager.pages.dashboard', ['period' => '24_hours']))),
+                    ->label('Last 24 Hours')
+                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '24_hours']))),
                 Action::make('7d')
-                    ->action(fn() => $this->redirect(route('filament.manager.pages.dashboard', ['period' => '7_days']))),
+                    ->label('Last 7 Days')
+                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '7_days']))),
             ])
-                ->label(__('Filter'))
+                ->label(__('Time Filter'))
                 ->icon('heroicon-m-funnel')
                 ->size(ActionSize::Small)
-                ->color('gray')
+                ->color('primary')
                 ->button(),
         ];
     }
@@ -55,12 +77,19 @@ class PulseDashboard extends Dashboard
     public function getWidgets(): array
     {
         return [
+            // Server statistics at the top (full width)
             PulseServers::class,
-            PulseCache::class,
-            PulseExceptions::class,
+            
+            // Three column layout for main metrics
             PulseUsage::class,
+            PulseCache::class,
             PulseQueues::class,
+            
+            // Exceptions and Slow Queries (larger widgets)
+            PulseExceptions::class,
             PulseSlowQueries::class,
+            
+            // Remaining widgets at the bottom
             PulseSlowRequests::class,
             PulseSlowOutGoingRequests::class,
         ];

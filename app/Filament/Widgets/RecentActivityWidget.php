@@ -9,10 +9,13 @@ use Spatie\Activitylog\Models\Activity;
 
 class RecentActivityWidget extends BaseWidget
 {
-    protected static ?int $sort = 2;
+    // Priority sort order
+    protected static ?int $sort = 99;  // Place at the end
 
+    // Full width for better readability
     protected int|string|array $columnSpan = 'full';
 
+    // Better title
     protected static ?string $heading = 'Recent Activity';
 
     public function table(Table $table): Table
@@ -21,19 +24,21 @@ class RecentActivityWidget extends BaseWidget
             ->query(
                 Activity::query()
                     ->with(['causer', 'subject'])
-                    ->select('activity_log.*')  // Add this line
-                    ->latest('activity_log.created_at')  // Specify the table
+                    ->select('activity_log.*')
+                    ->latest('activity_log.created_at')
                     ->limit(10)
             )
             ->columns([
                 TextColumn::make('causer.name')
                     ->icon('heroicon-o-user')
-                    ->label('Causer')
+                    ->label('User')
                     ->searchable(),
 
                 TextColumn::make('description')
+                    ->label('Activity')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
 
                 TextColumn::make('subject.name')
                     ->label('Subject')
@@ -45,6 +50,7 @@ class RecentActivityWidget extends BaseWidget
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
-            ]);
+            ])
+            ->striped();
     }
 }
