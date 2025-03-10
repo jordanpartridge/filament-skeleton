@@ -5,10 +5,9 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use App\Helpers\SystemHelper;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Filament\Notifications\Notification;
 
 class CacheOverviewWidget extends BaseWidget
@@ -19,25 +18,6 @@ class CacheOverviewWidget extends BaseWidget
     // Set the column span
     protected int|string|array $columnSpan = 'full';
     
-    // Add a Livewire listener for the clear cache action
-    protected $listeners = ['clear-cache' => 'clearCache'];
-    
-    /**
-     * Clear the application cache
-     */
-    public function clearCache()
-    {
-        Artisan::call('cache:clear');
-        Cache::put('cache_last_cleared', now());
-        Notification::make()
-            ->title('Cache cleared successfully')
-            ->success()
-            ->send();
-        
-        // Refresh the widget
-        $this->refresh();
-    }
-    
     /**
      * Get the stats for the widget
      */
@@ -47,131 +27,45 @@ class CacheOverviewWidget extends BaseWidget
         $cacheDriver = config('cache.default');
         $cacheConfig = config('cache.stores.' . $cacheDriver);
         
-        // Get cache size information
-        $cacheSize = $this->getCacheSize();
+        // Get size information (if file driver)
+        $cacheSize = '0 B';
+        $cacheEntries = 0;
         
-        // Get cache last cleared time (stored in cache)
-        $lastCleared = Cache::get('cache_last_cleared', 'Unknown');
-        if ($lastCleared !== 'Unknown') {
-            $lastCleared = Carbon::parse($lastCleared)->diffForHumans();
+        if ($cacheDriver === 'file') {
+            $cachePath = config('cache.stores.file.path');
+            if (File::exists($cachePath)) {
+                $files = File::files($cachePath);
+                $cacheEntries = count($files);
+                
+                $totalSize = 0;
+                foreach ($files as $file) {
+                    $totalSize += $file->getSize();
+                }
+                
+                $cacheSize = SystemHelper::formatBytes($totalSize);
+            }
         }
-        
-        // Get cache entry count (approximate)
-        $cacheEntryCount = $this->getCacheEntryCount();
-        
-        // Get cache hit ratio if available
-        $cacheHitRatio = Cache::get('cache_hit_ratio', null);
-        $hitRatioValue = $cacheHitRatio ? round($cacheHitRatio * 100) . '%' : 'N/A';
         
         return [
             Stat::make('Cache Driver', ucfirst($cacheDriver))
                 ->description('Type: ' . ($cacheConfig['driver'] ?? $cacheDriver))
                 ->descriptionIcon('heroicon-m-cube')
-                ->color('primary')
-                ->extraAttributes([
-                    'class' => 'cursor-pointer',
-                    'wire:click' => '$dispatch("open-modal", { id: "cache-info-modal" })',
-                ]),
+                ->color('primary'),
                 
-            Stat::make('Cache Size', $cacheSize['formatted'])
-                ->description($cacheSize['entries'] . ' files')
+            Stat::make('Cache Size', $cacheSize)
+                ->description($cacheEntries . ' entries')
                 ->descriptionIcon('heroicon-m-document')
-                ->color('info')
-                ->extraAttributes([
-                    'class' => 'cursor-pointer',
-                    'wire:click' => '$dispatch("open-modal", { id: "cache-files-modal" })',
-                ]),
+                ->color('info'),
                 
-            Stat::make('Last Cleared', $lastCleared)
-                ->description('Clear cache →')
+            Stat::make('Cache Actions', 'Clear Now')
+                ->description('Flush application cache')
                 ->descriptionIcon('heroicon-m-trash')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'cursor-pointer',
-                    'wire:click' => '$dispatch("clear-cache")',
-                ]),
+                ->color('danger'),
                 
-            Stat::make('Hit Ratio', $hitRatioValue)
-                ->description('Cache performance')
-                ->descriptionIcon('heroicon-m-bolt')
-                ->color('warning')
-                ->chart($cacheHitRatio ? [
-                    $cacheHitRatio * 100 - 10,
-                    $cacheHitRatio * 100 - 5, 
-                    $cacheHitRatio * 100 - 2,
-                    $cacheHitRatio * 100
-                ] : [50, 55, 60, 65]),
+            Stat::make('Environment', app()->environment())
+                ->description('Application mode')
+                ->descriptionIcon('heroicon-m-cog')
+                ->color('warning'),
         ];
-    }
-    
-    /**
-     * Get cache size information
-     * 
-     * @return array
-     */
-    private function getCacheSize(): array
-    {
-        $cacheDriver = config('cache.default');
-        $size = 0;
-        $entries = 0;
-        
-        try {
-            if ($cacheDriver === 'file') {
-                $cachePath = config('cache.stores.file.path');
-                if (File::exists($cachePath)) {
-                    $files = File::files($cachePath);
-                    $entries = count($files);
-                    
-                    foreach ($files as $file) {
-                        $size += $file->getSize();
-                    }
-                }
-            }
-            
-            // For other drivers, just use a placeholder for now
-            // In a real app, you might query Redis or Memcached for actual size
-            
-            return [
-                'bytes' => $size,
-                'formatted' => SystemHelper::formatBytes($size),
-                'entries' => $entries,
-            ];
-        } catch (\Exception $e) {
-            return [
-                'bytes' => 0,
-                'formatted' => SystemHelper::formatBytes(0),
-                'entries' => 0,
-            ];
-        }
-    }
-    
-    /**
-     * Get approximate cache entry count
-     * 
-     * @return int
-     */
-    private function getCacheEntryCount(): int
-    {
-        $cacheDriver = config('cache.default');
-        
-        try {
-            if ($cacheDriver === 'file') {
-                $cachePath = config('cache.stores.file.path');
-                if (File::exists($cachePath)) {
-                    return count(File::files($cachePath));
-                }
-            } elseif ($cacheDriver === 'redis') {
-                // For Redis, you'd need the phpredis extension and use something like:
-                // $redis = Cache::getRedis();
-                // return $redis->dbSize();
-            } elseif ($cacheDriver === 'memcached') {
-                // For Memcached, you'd need similar specific code
-            }
-            
-            // Default fallback
-            return 0;
-        } catch (\Exception $e) {
-            return 0;
-        }
     }
 }
