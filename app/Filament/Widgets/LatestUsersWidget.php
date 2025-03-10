@@ -31,6 +31,12 @@ class LatestUsersWidget extends BaseWidget
                     ->dateTime()
                     ->sortable()
                     ->label('Joined'),
+            ])
+            ->actions([
+                Tables\Actions\Action::make('view_all')
+                    ->label('View All Users')
+                    ->url(fn(): string => route('filament.admin.resources.users.index'))
+                    ->icon('heroicon-o-users')
             ]);
     }
 }

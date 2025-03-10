@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\SimpleSummaryWidget;
+use App\Filament\Widgets\CacheOverviewWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -42,6 +43,9 @@ class Dashboard extends BaseDashboard
         return [
             // System overview widgets
             SimpleSummaryWidget::class,
+            
+            // Cache overview widget
+            CacheOverviewWidget::class,
         ];
     }
 }

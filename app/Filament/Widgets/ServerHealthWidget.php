@@ -2,8 +2,10 @@
 
 namespace App\Filament\Widgets;
 
+use App\Helpers\SystemHelper;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Log;
 
 class ServerHealthWidget extends BaseWidget
 {
@@ -15,6 +17,13 @@ class ServerHealthWidget extends BaseWidget
     
     protected function getStats(): array
     {
+        // Check if shell_exec is available
+        $shellExecAvailable = function_exists('shell_exec') && !in_array('shell_exec', explode(',', ini_get('disable_functions')));
+        
+        if (!$shellExecAvailable) {
+            Log::warning('ServerHealthWidget: shell_exec function is not available. Using default values for server metrics.');
+        }
+        
         // Get disk space
         $diskTotal = disk_total_space('/');
         $diskFree = disk_free_space('/');
@@ -36,7 +45,7 @@ class ServerHealthWidget extends BaseWidget
         return [
             // Disk usage stat
             Stat::make('Disk Usage', $diskUsedPercentage . '%')
-                ->description(format_bytes($diskUsed) . ' of ' . format_bytes($diskTotal))
+                ->description(SystemHelper::formatBytes($diskUsed) . ' of ' . SystemHelper::formatBytes($diskTotal))
                 ->descriptionIcon('fas-hdd')
                 ->color($diskUsedPercentage > 80 ? 'danger' : ($diskUsedPercentage > 60 ? 'warning' : 'success'))
                 ->chart([
@@ -107,13 +116,13 @@ class ServerHealthWidget extends BaseWidget
                     $percentage = round(($used / $total) * 100);
                     
                     $result = [
-                        'total' => format_bytes($total * 1024 * 1024),
-                        'used' => format_bytes($used * 1024 * 1024),
+                        'total' => SystemHelper::formatBytes($total * 1024 * 1024),
+                        'used' => SystemHelper::formatBytes($used * 1024 * 1024),
                         'percentage' => $percentage,
                     ];
                 }
             } catch (\Exception $e) {
-                // Keep defaults
+                Log::warning('Unable to get memory usage: ' . $e->getMessage());
             }
         }
         
@@ -139,7 +148,7 @@ class ServerHealthWidget extends BaseWidget
                     $cpuUsage = min(100, $cpuUsage); // Cap at 100%
                 }
             } catch (\Exception $e) {
-                // Keep default
+                Log::warning('Unable to get CPU usage: ' . $e->getMessage());
             }
         }
         
@@ -189,7 +198,7 @@ class ServerHealthWidget extends BaseWidget
                     ];
                 }
             } catch (\Exception $e) {
-                // Keep defaults
+                Log::warning('Unable to get server uptime: ' . $e->getMessage());
             }
         }
         
@@ -212,28 +221,10 @@ class ServerHealthWidget extends BaseWidget
                     $count = intval(trim($processCount));
                 }
             } catch (\Exception $e) {
-                // Keep default
+                Log::warning('Unable to get PHP process count: ' . $e->getMessage());
             }
         }
         
         return $count;
-    }
-}
-
-/**
- * Format bytes to human-readable format
- */
-if (!function_exists('format_bytes')) {
-    function format_bytes($bytes, $precision = 2): string
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        
-        $bytes /= pow(1024, $pow);
-        
-        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }
