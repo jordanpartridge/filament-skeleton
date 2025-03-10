@@ -7,6 +7,12 @@ use App\Filament\Widgets\UserSignupChartWidget;
 use App\Filament\Widgets\LatestUsersWidget;
 use Filament\Pages\Dashboard;
 
+/**
+ * User Dashboard Page
+ * 
+ * Provides a dedicated dashboard for user management features
+ * including user statistics, signup trends, and a list of recently added users.
+ */
 class UserDashboard extends Dashboard
 {
     // Set the route path
@@ -24,7 +30,11 @@ class UserDashboard extends Dashboard
     // Set the navigation sort order
     protected static ?int $navigationSort = 1;
 
-    // Configure the dashboard layout
+    /**
+     * Configure the dashboard layout with responsive columns
+     * 
+     * @return array|int
+     */
     public function getColumns(): int|array
     {
         return [
@@ -34,7 +44,11 @@ class UserDashboard extends Dashboard
         ];
     }
 
-    // Define which widgets appear on the dashboard
+    /**
+     * Define which widgets appear on the dashboard
+     * 
+     * @return array
+     */
     public function getWidgets(): array
     {
         return [
