@@ -18,16 +18,40 @@ class SystemStatsWidget extends BaseWidget
     
     protected function getStats(): array
     {
-        // Get database size (works for MySQL)
+        // Get database size with cross-database support
         $dbSize = Cache::remember('dashboard_db_size', 60, function () {
             try {
-                $dbName = config('database.connections.mysql.database');
-                $result = DB::select("SELECT SUM(data_length + index_length) / 1024 / 1024 as size 
-                    FROM information_schema.TABLES 
-                    WHERE table_schema = ?", [$dbName]);
-                return number_format($result[0]->size ?? 0, 2);
+                $connection = config('database.default');
+                $dbName = config('database.connections.' . $connection . '.database');
+                
+                if ($connection === 'mysql') {
+                    // MySQL-specific query
+                    $result = DB::select("SELECT SUM(data_length + index_length) / 1024 / 1024 as size 
+                        FROM information_schema.TABLES 
+                        WHERE table_schema = ?", [$dbName]);
+                    return number_format($result[0]->size ?? 0, 2);
+                } elseif ($connection === 'sqlite') {
+                    // SQLite approach - get file size or 0 for in-memory
+                    $databasePath = config('database.connections.sqlite.database');
+                    if ($databasePath && $databasePath !== ':memory:' && file_exists($databasePath)) {
+                        $size = filesize($databasePath) / 1024 / 1024; // Convert to MB
+                        return number_format($size, 2);
+                    }
+                    return number_format(0, 2);
+                } elseif ($connection === 'pgsql') {
+                    // PostgreSQL-specific approach
+                    $result = DB::select("
+                        SELECT pg_database_size(current_database()) / 1024 / 1024 as size
+                    ");
+                    return number_format($result[0]->size ?? 0, 2);
+                } else {
+                    // Default for other database types
+                    return number_format(0, 2);
+                }
             } catch (\Exception $e) {
-                return 0;
+                // Log error for debugging (optional)
+                // \Illuminate\Support\Facades\Log::error('Database size calculation error: ' . $e->getMessage());
+                return number_format(0, 2);
             }
         });
         
@@ -44,7 +68,8 @@ class SystemStatsWidget extends BaseWidget
         
         return [
             Stat::make('Database Size', $dbSize . ' MB')
-                ->description('MySQL database size')
+                ->description('Database size')
+                ->descriptionIcon('heroicon-m-database')
                 ->color('warning')
                 ->chart([5, 7, 10, 8, 15, 12, 18]),
 

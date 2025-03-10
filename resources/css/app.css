@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dashboard layout improvements */
+.fi-dashboard-page {
+    @apply p-4 md:p-6;
+}
+
+/* Better spacing between widgets */
+.fi-dashboard-widgets {
+    @apply gap-6;
+}
+
+/* Widget card styling */
+.fi-wi {
+    @apply rounded-xl overflow-hidden shadow-sm border border-gray-700;
+}
+
+/* Better stats card styling */
+.fi-so-card {
+    @apply rounded-lg overflow-hidden;
+}
+
+/* Better pulse widget spacing */
+[wire\:id*="dotswan"] {
+    @apply mb-4;
+}
