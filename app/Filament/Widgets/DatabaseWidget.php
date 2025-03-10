@@ -18,24 +18,61 @@ class DatabaseWidget extends BaseWidget
     
     protected function getStats(): array
     {
-        // Get database size
+        // Get database size with cross-database support
         $dbSize = Cache::remember('dashboard_db_size', 600, function () {
             try {
-                $dbName = config('database.connections.mysql.database');
-                $result = DB::select("SELECT SUM(data_length + index_length) / 1024 / 1024 as size 
-                    FROM information_schema.TABLES 
-                    WHERE table_schema = ?", [$dbName]);
-                return number_format($result[0]->size ?? 0, 2);
+                $connection = config('database.default');
+                $dbName = config('database.connections.' . $connection . '.database');
+                
+                if ($connection === 'mysql') {
+                    // MySQL-specific query
+                    $result = DB::select("SELECT SUM(data_length + index_length) / 1024 / 1024 as size 
+                        FROM information_schema.TABLES 
+                        WHERE table_schema = ?", [$dbName]);
+                    return number_format($result[0]->size ?? 0, 2);
+                } elseif ($connection === 'sqlite') {
+                    // SQLite approach - get file size or 0 for in-memory
+                    $databasePath = config('database.connections.sqlite.database');
+                    if ($databasePath && $databasePath !== ':memory:' && file_exists($databasePath)) {
+                        $size = filesize($databasePath) / 1024 / 1024; // Convert to MB
+                        return number_format($size, 2);
+                    }
+                    return number_format(0, 2);
+                } elseif ($connection === 'pgsql') {
+                    // PostgreSQL-specific approach
+                    $result = DB::select("
+                        SELECT pg_database_size(current_database()) / 1024 / 1024 as size
+                    ");
+                    return number_format($result[0]->size ?? 0, 2);
+                } else {
+                    // Default for other database types
+                    return number_format(0, 2);
+                }
             } catch (\Exception $e) {
-                return 0;
+                // Log error for debugging (optional)
+                // \Illuminate\Support\Facades\Log::error('Database size calculation error: ' . $e->getMessage());
+                return number_format(0, 2);
             }
         });
         
-        // Get total tables count
+        // Get total tables count with cross-database support
         $tablesCount = Cache::remember('dashboard_tables_count', 600, function () {
             try {
-                $tables = DB::select('SHOW TABLES');
-                return count($tables);
+                $connection = config('database.default');
+                
+                if ($connection === 'mysql') {
+                    $tables = DB::select('SHOW TABLES');
+                    return count($tables);
+                } elseif ($connection === 'sqlite') {
+                    $tables = DB::select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+                    return count($tables);
+                } elseif ($connection === 'pgsql') {
+                    $tables = DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
+                    return count($tables);
+                } else {
+                    // Default fallback for other database types
+                    return 0;
+                }
             } catch (\Exception $e) {
                 return 0;
             }
@@ -53,16 +90,6 @@ class DatabaseWidget extends BaseWidget
         
         // Get database connections
         $dbConnections = $this->getDatabaseConnections();
-        
-        // Get MySQL/MariaDB version
-        $dbVersion = Cache::remember('dashboard_db_version', 3600, function () {
-            try {
-                $versionInfo = DB::select('SELECT VERSION() as version');
-                return $versionInfo[0]->version ?? 'Unknown';
-            } catch (\Exception $e) {
-                return 'Unknown';
-            }
-        });
         
         return [
             // Database Tables count with size
@@ -121,23 +148,46 @@ class DatabaseWidget extends BaseWidget
             'percentage' => 2, // Current usage percentage
         ];
         
-        // Try to get real values (works on MySQL)
+        // Get database connection
+        $connection = config('database.default');
+        
+        // Try to get real values based on database type
         try {
-            $maxConnections = DB::select("SHOW VARIABLES LIKE 'max_connections'");
-            $processlist = DB::select("SHOW PROCESSLIST");
-            
-            if (!empty($maxConnections) && !empty($processlist)) {
-                $max = (int)$maxConnections[0]->Value;
-                $active = count($processlist);
+            if ($connection === 'mysql') {
+                $maxConnections = DB::select("SHOW VARIABLES LIKE 'max_connections'");
+                $processlist = DB::select("SHOW PROCESSLIST");
                 
-                $result = [
-                    'active' => $active,
-                    'max' => $max,
-                    'percentage' => round(($active / $max) * 100),
-                ];
+                if (!empty($maxConnections) && !empty($processlist)) {
+                    $max = (int)$maxConnections[0]->Value;
+                    $active = count($processlist);
+                    
+                    $result = [
+                        'active' => $active,
+                        'max' => $max,
+                        'percentage' => round(($active / $max) * 100),
+                    ];
+                }
+            } elseif ($connection === 'pgsql') {
+                // PostgreSQL approach
+                $maxConn = DB::select("SHOW max_connections");
+                $activeConn = DB::select("SELECT count(*) as count FROM pg_stat_activity");
+                
+                if (!empty($maxConn) && !empty($activeConn)) {
+                    $max = (int)$maxConn[0]->max_connections;
+                    $active = (int)$activeConn[0]->count;
+                    
+                    $result = [
+                        'active' => $active,
+                        'max' => $max,
+                        'percentage' => round(($active / $max) * 100),
+                    ];
+                }
             }
+            // For SQLite, we'll just use the default values as it doesn't have connection limits
+            
         } catch (\Exception $e) {
-            // Keep defaults
+            // Keep defaults and log error
+            // \Illuminate\Support\Facades\Log::error('Database connections error: ' . $e->getMessage());
         }
         
         return $result;
