@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use App\Helpers\SystemHelper;
 use Carbon\Carbon;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Notifications\Notification;
 
 class CacheOverviewWidget extends BaseWidget
@@ -19,6 +18,25 @@ class CacheOverviewWidget extends BaseWidget
     
     // Set the column span
     protected int|string|array $columnSpan = 'full';
+    
+    // Add a Livewire listener for the clear cache action
+    protected $listeners = ['clear-cache' => 'clearCache'];
+    
+    /**
+     * Clear the application cache
+     */
+    public function clearCache()
+    {
+        Artisan::call('cache:clear');
+        Cache::put('cache_last_cleared', now());
+        Notification::make()
+            ->title('Cache cleared successfully')
+            ->success()
+            ->send();
+        
+        // Refresh the widget
+        $this->refresh();
+    }
     
     /**
      * Get the stats for the widget
@@ -70,21 +88,8 @@ class CacheOverviewWidget extends BaseWidget
                 ->color('success')
                 ->extraAttributes([
                     'class' => 'cursor-pointer',
-                    'x-on:click' => '$dispatch("clear-cache")',
-                ])
-                ->action(
-                    Action::make('clear_cache')
-                        ->icon('heroicon-m-trash')
-                        ->requiresConfirmation()
-                        ->action(function() {
-                            Artisan::call('cache:clear');
-                            Cache::put('cache_last_cleared', now());
-                            Notification::make()
-                                ->title('Cache cleared successfully')
-                                ->success()
-                                ->send();
-                        })
-                ),
+                    'wire:click' => '$dispatch("clear-cache")',
+                ]),
                 
             Stat::make('Hit Ratio', $hitRatioValue)
                 ->description('Cache performance')
