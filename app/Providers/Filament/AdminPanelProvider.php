@@ -2,9 +2,10 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Pulse;
+use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\PulseDashboard;
 use App\Filament\Widgets\RecentActivityWidget;
+use App\Filament\Widgets\UserStatsWidget;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -45,34 +46,20 @@ class AdminPanelProvider extends PanelProvider
                     if (config('app.env') === 'local') {
                         return Blade::render(
                             "<x-login-link class='bg-white dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors duration-300 rounded-lg shadow-sm hover:shadow-md' />");
-
-
                     }
 
                     return null;
                 })
-            ->
-            colors([
+            ->colors([
                 'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
                 PulseDashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-                PulseServers::class,
-                PulseCache::class,
-                PulseExceptions::class,
-                PulseUsage::class,
-                PulseQueues::class,
-                PulseSlowQueries::class,
-                PulseSlowRequests::class,
-                PulseSlowOutGoingRequests::class,
-
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
