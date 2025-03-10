@@ -2,7 +2,10 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\UserStatsWidget;
+use App\Filament\Widgets\SystemStatsWidget;
+use App\Filament\Widgets\ServerHealthWidget;
+use App\Filament\Widgets\DatabaseWidget;
+use App\Filament\Widgets\SecurityWidget;
 use App\Filament\Widgets\RecentActivityWidget;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
@@ -37,19 +40,26 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            // Stats widget at the top
-            // User stats moved to User Dashboard
+            // System overview at the top
+            SystemStatsWidget::class,
             
-            // Server metrics as a full-width widget
-            PulseServers::class,
+            // Server health metrics
+            ServerHealthWidget::class,
+            DatabaseWidget::class,
             
-            // Side-by-side metrics
+            // Security metrics
+            SecurityWidget::class,
+            PulseExceptions::class,
+            
+            // Cache and queue metrics (side by side)
             PulseCache::class,
             PulseQueues::class,
             
-            // Side-by-side metrics
+            // Server info (full width)
+            PulseServers::class,
+            
+            // Usage metrics
             PulseUsage::class,
-            PulseExceptions::class,
             
             // Full-width activity log at the bottom
             RecentActivityWidget::class,

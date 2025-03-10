@@ -7,11 +7,14 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ServerHealthWidget extends BaseWidget
 {
-    // Auto-refresh every 15 seconds
-    protected static ?string $pollingInterval = '15s';
+    // Auto-refresh every 30 seconds
+    protected static ?string $pollingInterval = '30s';
     
-    // Make it span all 4 columns
-    protected int|string|array $columnSpan = 4;
+    // Make it half width on medium screens
+    protected int|string|array $columnSpan = [
+        'default' => 'full',
+        'md' => 1, // Half width on medium screens
+    ];
     
     protected function getStats(): array
     {
@@ -27,57 +30,39 @@ class ServerHealthWidget extends BaseWidget
         // Get CPU usage (if available)
         $cpuUsage = $this->getCpuUsage();
         
-        // Get server uptime
-        $uptime = $this->getServerUptime();
-        
-        // Get PHP process count
-        $phpProcesses = $this->getPhpProcessCount();
-        
         return [
-            // Disk usage stat
             Stat::make('Disk Usage', $diskUsedPercentage . '%')
                 ->description(format_bytes($diskUsed) . ' of ' . format_bytes($diskTotal))
-                ->descriptionIcon('fas-hdd')
+                ->descriptionIcon('heroicon-m-circle-stack')
                 ->color($diskUsedPercentage > 80 ? 'danger' : ($diskUsedPercentage > 60 ? 'warning' : 'success'))
                 ->chart([
-                    max(0, $diskUsedPercentage - 20), 
                     max(0, $diskUsedPercentage - 15), 
                     max(0, $diskUsedPercentage - 10), 
                     max(0, $diskUsedPercentage - 5), 
                     $diskUsedPercentage
                 ]),
                 
-            // Memory usage stat
             Stat::make('Memory Usage', $memoryUsage['percentage'] . '%')
                 ->description($memoryUsage['used'] . ' of ' . $memoryUsage['total'])
-                ->descriptionIcon('fas-memory')
+                ->descriptionIcon('heroicon-m-cpu-chip')
                 ->color($memoryUsage['percentage'] > 80 ? 'danger' : ($memoryUsage['percentage'] > 60 ? 'warning' : 'success'))
                 ->chart([
-                    max(0, $memoryUsage['percentage'] - 20), 
-                    max(0, $memoryUsage['percentage'] - 15),
+                    max(0, $memoryUsage['percentage'] - 15), 
                     max(0, $memoryUsage['percentage'] - 10), 
                     max(0, $memoryUsage['percentage'] - 5), 
                     $memoryUsage['percentage']
                 ]),
 
-            // CPU load stat
             Stat::make('CPU Load', $cpuUsage . '%')
                 ->description('System average')
-                ->descriptionIcon('fas-microchip')
+                ->descriptionIcon('heroicon-m-bolt')
                 ->color($cpuUsage > 80 ? 'danger' : ($cpuUsage > 60 ? 'warning' : 'success'))
                 ->chart([
-                    max(0, $cpuUsage - 20),
                     max(0, $cpuUsage - 15), 
                     max(0, $cpuUsage - 10), 
                     max(0, $cpuUsage - 5), 
                     $cpuUsage
                 ]),
-                
-            // Server uptime with PHP processes
-            Stat::make('Server Uptime', $uptime['formatted'])
-                ->description('PHP Processes: ' . $phpProcesses)
-                ->descriptionIcon('fas-clock')
-                ->color('primary'),
         ];
     }
     
@@ -144,79 +129,6 @@ class ServerHealthWidget extends BaseWidget
         }
         
         return $cpuUsage;
-    }
-    
-    /**
-     * Get server uptime information
-     */
-    private function getServerUptime(): array
-    {
-        // Default values
-        $result = [
-            'seconds' => 0,
-            'formatted' => 'Unknown',
-            'started' => 'Unknown start time',
-        ];
-        
-        // Try to get real values (works on Linux)
-        if (function_exists('shell_exec')) {
-            try {
-                $uptime = shell_exec('uptime -s');
-                $uptimeP = shell_exec('uptime -p');
-                
-                if ($uptime !== null) {
-                    $startTime = strtotime(trim($uptime));
-                    $now = time();
-                    $uptimeSeconds = $now - $startTime;
-                    
-                    $formatted = trim(str_replace('up ', '', $uptimeP ?? ''));
-                    if (empty($formatted)) {
-                        // Format manually if uptime -p didn't work
-                        $days = floor($uptimeSeconds / 86400);
-                        $hours = floor(($uptimeSeconds % 86400) / 3600);
-                        $minutes = floor(($uptimeSeconds % 3600) / 60);
-                        
-                        $formatted = '';
-                        if ($days > 0) $formatted .= "$days days, ";
-                        if ($hours > 0) $formatted .= "$hours hours, ";
-                        $formatted .= "$minutes minutes";
-                    }
-                    
-                    $result = [
-                        'seconds' => $uptimeSeconds,
-                        'formatted' => $formatted,
-                        'started' => date('Y-m-d H:i', $startTime),
-                    ];
-                }
-            } catch (\Exception $e) {
-                // Keep defaults
-            }
-        }
-        
-        return $result;
-    }
-    
-    /**
-     * Get PHP process count
-     */
-    private function getPhpProcessCount(): int
-    {
-        // Default value
-        $count = 3; // Default for visualization
-        
-        // Try to get real values (works on Linux)
-        if (function_exists('shell_exec')) {
-            try {
-                $processCount = shell_exec('ps aux | grep php | grep -v grep | wc -l');
-                if ($processCount !== null) {
-                    $count = intval(trim($processCount));
-                }
-            } catch (\Exception $e) {
-                // Keep default
-            }
-        }
-        
-        return $count;
     }
 }
 
