@@ -9,8 +9,10 @@ use Database\Seeders\PermissionSeeder;
 
 // Make sure cache is cleared and permissions are reset before each test
 beforeEach(function () {
-    // Disable teams for permissions during tests
-    Config::set('permission.teams', false);
+    // For SQLite in-memory testing, make sure team_id is nullable
+    if (config('database.default') === 'sqlite') {
+        Config::set('permission.teams', false);
+    }
     
     // Run the permission seeder
     $this->seed(PermissionSeeder::class);
