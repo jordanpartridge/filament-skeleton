@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
-use App\Concerns\LogsFillable;
 use Database\Factories\UserFactory;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Validation\Rules\Password;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -22,9 +19,6 @@ class User extends Authenticatable implements FilamentUser
      * @use HasFactory<UserFactory>
      */
     use HasFactory;
-    use HasRoles;
-    use LogsActivity;
-    use LogsFillable;
     use Notifiable;
 
     /**
@@ -48,9 +42,9 @@ class User extends Authenticatable implements FilamentUser
         'remember_token',
     ];
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Section::make('Basic Information')
                     ->schema([
