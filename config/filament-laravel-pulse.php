@@ -17,7 +17,7 @@ return [
                 'md' => 1,    // Take up half the dashboard width on medium screens
             ],
         ],
-        
+
         // Keep other component configurations from the vendor file
     ],
 ];

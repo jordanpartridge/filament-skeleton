@@ -10,14 +10,14 @@ use Tests\DuskTestCase;
 class FilamentLoginTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    
+
     public function test_user_can_view_login_page()
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/admin/login')
-                    ->assertSee('Sign in to your account')
-                    ->assertSee('Email')
-                    ->assertSee('Password');
+                ->assertSee('Sign in to your account')
+                ->assertSee('Email')
+                ->assertSee('Password');
         });
     }
 
@@ -30,11 +30,11 @@ class FilamentLoginTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->visit('/admin/login')
-                    ->type('email', 'test@example.com')
-                    ->type('password', 'password')
-                    ->press('Sign in')
-                    ->waitForLocation('/admin')
-                    ->assertPathIs('/admin');
+                ->type('email', 'test@example.com')
+                ->type('password', 'password')
+                ->press('Sign in')
+                ->waitForLocation('/admin')
+                ->assertPathIs('/admin');
         });
     }
 
@@ -42,10 +42,10 @@ class FilamentLoginTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/admin/login')
-                    ->type('email', 'wrong@example.com')
-                    ->type('password', 'wrongpassword')
-                    ->press('Sign in')
-                    ->assertSee('These credentials do not match our records');
+                ->type('email', 'wrong@example.com')
+                ->type('password', 'wrongpassword')
+                ->press('Sign in')
+                ->assertSee('These credentials do not match our records');
         });
     }
 }

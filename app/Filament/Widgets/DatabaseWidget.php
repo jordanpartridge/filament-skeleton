@@ -4,43 +4,44 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseWidget extends BaseWidget
 {
     // Auto-refresh every minute
     protected static ?string $pollingInterval = '60s';
-    
+
     // Make it span 2 columns
     protected int|string|array $columnSpan = 2;
-    
+
     protected function getStats(): array
     {
         // Get database size
         $dbSize = Cache::remember('dashboard_db_size', 600, function () {
             try {
                 $dbName = config('database.connections.mysql.database');
-                $result = DB::select("SELECT SUM(data_length + index_length) / 1024 / 1024 as size 
+                $result = DB::select('SELECT SUM(data_length + index_length) / 1024 / 1024 as size 
                     FROM information_schema.TABLES 
-                    WHERE table_schema = ?", [$dbName]);
+                    WHERE table_schema = ?', [$dbName]);
+
                 return number_format($result[0]->size ?? 0, 2);
             } catch (\Exception $e) {
                 return 0;
             }
         });
-        
+
         // Get total tables count
         $tablesCount = Cache::remember('dashboard_tables_count', 600, function () {
             try {
                 $tables = DB::select('SHOW TABLES');
+
                 return count($tables);
             } catch (\Exception $e) {
                 return 0;
             }
         });
-        
+
         // Get slow queries count
         $slowQueries = Cache::remember('dashboard_slow_queries', 60, function () {
             try {
@@ -50,24 +51,25 @@ class DatabaseWidget extends BaseWidget
                 return 0;
             }
         });
-        
+
         // Get database connections
         $dbConnections = $this->getDatabaseConnections();
-        
+
         // Get MySQL/MariaDB version
         $dbVersion = Cache::remember('dashboard_db_version', 3600, function () {
             try {
                 $versionInfo = DB::select('SELECT VERSION() as version');
+
                 return $versionInfo[0]->version ?? 'Unknown';
             } catch (\Exception $e) {
                 return 'Unknown';
             }
         });
-        
+
         return [
             // Database Tables count with size
             Stat::make('Database Tables', $tablesCount)
-                ->description('Size: ' . $dbSize . ' MB')
+                ->description('Size: '.$dbSize.' MB')
                 ->descriptionIcon('fas-database')
                 ->color('info')
                 ->chart([
@@ -75,10 +77,10 @@ class DatabaseWidget extends BaseWidget
                     $tablesCount,
                     $tablesCount,
                     $tablesCount,
-                    $tablesCount
+                    $tablesCount,
                 ]),
-                
-            // Slow queries    
+
+            // Slow queries
             Stat::make('Slow Queries', $slowQueries)
                 ->description('Last 24 hours')
                 ->descriptionIcon('fas-hourglass-half')
@@ -87,18 +89,18 @@ class DatabaseWidget extends BaseWidget
 
             // Active connections
             Stat::make('Active Connections', $dbConnections['active'])
-                ->description('Max: ' . $dbConnections['max'])
+                ->description('Max: '.$dbConnections['max'])
                 ->descriptionIcon('fas-plug')
                 ->color($dbConnections['percentage'] > 80 ? 'danger' : ($dbConnections['percentage'] > 60 ? 'warning' : 'success'))
                 ->chart([
                     max(0, $dbConnections['active'] - 3),
                     max(0, $dbConnections['active'] - 2),
                     max(0, $dbConnections['active'] - 1),
-                    $dbConnections['active']
+                    $dbConnections['active'],
                 ]),
         ];
     }
-    
+
     /**
      * Get a shortened version of the database version string
      */
@@ -106,9 +108,10 @@ class DatabaseWidget extends BaseWidget
     {
         // Extract just the major.minor.patch version
         preg_match('/^(\d+\.\d+\.\d+)/', $version, $matches);
+
         return $matches[1] ?? $version;
     }
-    
+
     /**
      * Get database connection information
      */
@@ -120,16 +123,16 @@ class DatabaseWidget extends BaseWidget
             'max' => 151,  // Default max connections
             'percentage' => 2, // Current usage percentage
         ];
-        
+
         // Try to get real values (works on MySQL)
         try {
             $maxConnections = DB::select("SHOW VARIABLES LIKE 'max_connections'");
-            $processlist = DB::select("SHOW PROCESSLIST");
-            
-            if (!empty($maxConnections) && !empty($processlist)) {
-                $max = (int)$maxConnections[0]->Value;
+            $processlist = DB::select('SHOW PROCESSLIST');
+
+            if (! empty($maxConnections) && ! empty($processlist)) {
+                $max = (int) $maxConnections[0]->Value;
                 $active = count($processlist);
-                
+
                 $result = [
                     'active' => $active,
                     'max' => $max,
@@ -139,7 +142,7 @@ class DatabaseWidget extends BaseWidget
         } catch (\Exception $e) {
             // Keep defaults
         }
-        
+
         return $result;
     }
 }

@@ -20,7 +20,6 @@ class FilamentLogin extends BaseComponent
     /**
      * Assert that the browser page contains the component.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function assert(Browser $browser)
@@ -45,7 +44,6 @@ class FilamentLogin extends BaseComponent
     /**
      * Login with the given credentials.
      *
-     * @param  Browser  $browser
      * @param  string  $email
      * @param  string  $password
      * @return void
@@ -53,8 +51,8 @@ class FilamentLogin extends BaseComponent
     public function login(Browser $browser, $email = 'admin@example.com', $password = 'password')
     {
         $browser->type('@email', $email)
-                ->type('@password', $password)
-                ->click('@submit')
-                ->waitForLocation('/admin');
+            ->type('@password', $password)
+            ->click('@submit')
+            ->waitForLocation('/admin');
     }
 }

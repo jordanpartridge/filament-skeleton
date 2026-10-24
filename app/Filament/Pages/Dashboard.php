@@ -11,12 +11,12 @@ class Dashboard extends BaseDashboard
      * The dashboard title
      */
     protected static ?string $title = 'System Overview';
-    
+
     /**
      * Set navigation group
      */
     protected static ?string $navigationGroup = 'System Monitoring';
-    
+
     /**
      * Set navigation sort (to show at top)
      */

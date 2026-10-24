@@ -9,10 +9,10 @@ class ServerHealthWidget extends BaseWidget
 {
     // Auto-refresh every 15 seconds
     protected static ?string $pollingInterval = '15s';
-    
+
     // Make it span all 4 columns
     protected int|string|array $columnSpan = 4;
-    
+
     protected function getStats(): array
     {
         // Get disk space
@@ -20,67 +20,67 @@ class ServerHealthWidget extends BaseWidget
         $diskFree = disk_free_space('/');
         $diskUsed = $diskTotal - $diskFree;
         $diskUsedPercentage = round(($diskUsed / $diskTotal) * 100);
-        
+
         // Get memory usage (if available)
         $memoryUsage = $this->getMemoryUsage();
-        
+
         // Get CPU usage (if available)
         $cpuUsage = $this->getCpuUsage();
-        
+
         // Get server uptime
         $uptime = $this->getServerUptime();
-        
+
         // Get PHP process count
         $phpProcesses = $this->getPhpProcessCount();
-        
+
         return [
             // Disk usage stat
-            Stat::make('Disk Usage', $diskUsedPercentage . '%')
-                ->description(format_bytes($diskUsed) . ' of ' . format_bytes($diskTotal))
+            Stat::make('Disk Usage', $diskUsedPercentage.'%')
+                ->description(format_bytes($diskUsed).' of '.format_bytes($diskTotal))
                 ->descriptionIcon('fas-hdd')
                 ->color($diskUsedPercentage > 80 ? 'danger' : ($diskUsedPercentage > 60 ? 'warning' : 'success'))
                 ->chart([
-                    max(0, $diskUsedPercentage - 20), 
-                    max(0, $diskUsedPercentage - 15), 
-                    max(0, $diskUsedPercentage - 10), 
-                    max(0, $diskUsedPercentage - 5), 
-                    $diskUsedPercentage
+                    max(0, $diskUsedPercentage - 20),
+                    max(0, $diskUsedPercentage - 15),
+                    max(0, $diskUsedPercentage - 10),
+                    max(0, $diskUsedPercentage - 5),
+                    $diskUsedPercentage,
                 ]),
-                
+
             // Memory usage stat
-            Stat::make('Memory Usage', $memoryUsage['percentage'] . '%')
-                ->description($memoryUsage['used'] . ' of ' . $memoryUsage['total'])
+            Stat::make('Memory Usage', $memoryUsage['percentage'].'%')
+                ->description($memoryUsage['used'].' of '.$memoryUsage['total'])
                 ->descriptionIcon('fas-memory')
                 ->color($memoryUsage['percentage'] > 80 ? 'danger' : ($memoryUsage['percentage'] > 60 ? 'warning' : 'success'))
                 ->chart([
-                    max(0, $memoryUsage['percentage'] - 20), 
+                    max(0, $memoryUsage['percentage'] - 20),
                     max(0, $memoryUsage['percentage'] - 15),
-                    max(0, $memoryUsage['percentage'] - 10), 
-                    max(0, $memoryUsage['percentage'] - 5), 
-                    $memoryUsage['percentage']
+                    max(0, $memoryUsage['percentage'] - 10),
+                    max(0, $memoryUsage['percentage'] - 5),
+                    $memoryUsage['percentage'],
                 ]),
 
             // CPU load stat
-            Stat::make('CPU Load', $cpuUsage . '%')
+            Stat::make('CPU Load', $cpuUsage.'%')
                 ->description('System average')
                 ->descriptionIcon('fas-microchip')
                 ->color($cpuUsage > 80 ? 'danger' : ($cpuUsage > 60 ? 'warning' : 'success'))
                 ->chart([
                     max(0, $cpuUsage - 20),
-                    max(0, $cpuUsage - 15), 
-                    max(0, $cpuUsage - 10), 
-                    max(0, $cpuUsage - 5), 
-                    $cpuUsage
+                    max(0, $cpuUsage - 15),
+                    max(0, $cpuUsage - 10),
+                    max(0, $cpuUsage - 5),
+                    $cpuUsage,
                 ]),
-                
+
             // Server uptime with PHP processes
             Stat::make('Server Uptime', $uptime['formatted'])
-                ->description('PHP Processes: ' . $phpProcesses)
+                ->description('PHP Processes: '.$phpProcesses)
                 ->descriptionIcon('fas-clock')
                 ->color('primary'),
         ];
     }
-    
+
     /**
      * Get memory usage information
      */
@@ -92,20 +92,20 @@ class ServerHealthWidget extends BaseWidget
             'used' => 'N/A',
             'percentage' => 50, // Default to 50% for visualization
         ];
-        
+
         // Try to get real values (works on Linux)
         if (function_exists('shell_exec')) {
             try {
                 $free = shell_exec('free -m');
                 if ($free !== null) {
                     $lines = explode("\n", $free);
-                    $memory = explode(" ", preg_replace('/\s+/', ' ', $lines[1]));
-                    
+                    $memory = explode(' ', preg_replace('/\s+/', ' ', $lines[1]));
+
                     // Extract memory values
                     $total = intval($memory[1]);
                     $used = intval($memory[2]);
                     $percentage = round(($used / $total) * 100);
-                    
+
                     $result = [
                         'total' => format_bytes($total * 1024 * 1024),
                         'used' => format_bytes($used * 1024 * 1024),
@@ -116,10 +116,10 @@ class ServerHealthWidget extends BaseWidget
                 // Keep defaults
             }
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get CPU usage information
      */
@@ -127,7 +127,7 @@ class ServerHealthWidget extends BaseWidget
     {
         // Default value
         $cpuUsage = 35; // Default to 35% for visualization
-        
+
         // Try to get real values (works on Linux)
         if (function_exists('shell_exec')) {
             try {
@@ -142,10 +142,10 @@ class ServerHealthWidget extends BaseWidget
                 // Keep default
             }
         }
-        
+
         return $cpuUsage;
     }
-    
+
     /**
      * Get server uptime information
      */
@@ -157,31 +157,35 @@ class ServerHealthWidget extends BaseWidget
             'formatted' => 'Unknown',
             'started' => 'Unknown start time',
         ];
-        
+
         // Try to get real values (works on Linux)
         if (function_exists('shell_exec')) {
             try {
                 $uptime = shell_exec('uptime -s');
                 $uptimeP = shell_exec('uptime -p');
-                
+
                 if ($uptime !== null) {
                     $startTime = strtotime(trim($uptime));
                     $now = time();
                     $uptimeSeconds = $now - $startTime;
-                    
+
                     $formatted = trim(str_replace('up ', '', $uptimeP ?? ''));
                     if (empty($formatted)) {
                         // Format manually if uptime -p didn't work
                         $days = floor($uptimeSeconds / 86400);
                         $hours = floor(($uptimeSeconds % 86400) / 3600);
                         $minutes = floor(($uptimeSeconds % 3600) / 60);
-                        
+
                         $formatted = '';
-                        if ($days > 0) $formatted .= "$days days, ";
-                        if ($hours > 0) $formatted .= "$hours hours, ";
+                        if ($days > 0) {
+                            $formatted .= "$days days, ";
+                        }
+                        if ($hours > 0) {
+                            $formatted .= "$hours hours, ";
+                        }
                         $formatted .= "$minutes minutes";
                     }
-                    
+
                     $result = [
                         'seconds' => $uptimeSeconds,
                         'formatted' => $formatted,
@@ -192,10 +196,10 @@ class ServerHealthWidget extends BaseWidget
                 // Keep defaults
             }
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get PHP process count
      */
@@ -203,7 +207,7 @@ class ServerHealthWidget extends BaseWidget
     {
         // Default value
         $count = 3; // Default for visualization
-        
+
         // Try to get real values (works on Linux)
         if (function_exists('shell_exec')) {
             try {
@@ -215,7 +219,7 @@ class ServerHealthWidget extends BaseWidget
                 // Keep default
             }
         }
-        
+
         return $count;
     }
 }
@@ -223,17 +227,17 @@ class ServerHealthWidget extends BaseWidget
 /**
  * Format bytes to human-readable format
  */
-if (!function_exists('format_bytes')) {
+if (! function_exists('format_bytes')) {
     function format_bytes($bytes, $precision = 2): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
-        
+
         $bytes /= pow(1024, $pow);
-        
-        return round($bytes, $precision) . ' ' . $units[$pow];
+
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\User;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -23,19 +22,20 @@ class PulseDashboard extends Dashboard
 
     // Set the route path
     protected static string $routePath = '/pulse';
-    
+
     // Set a proper title for the page
     protected static ?string $title = 'Application Performance';
-    
+
     // Set a proper navigation label
     protected static ?string $navigationLabel = 'Performance';
-    
+
     // Set proper navigation icon
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     public static function canAccess(): bool
     {
         $user = request()->user();
+
         return $user->hasPermissionTo('view pulse');
     }
 
@@ -58,13 +58,13 @@ class PulseDashboard extends Dashboard
             ActionGroup::make([
                 Action::make('1h')
                     ->label('Last Hour')
-                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard'))),
+                    ->action(fn () => $this->redirect(route('filament.admin.pages.pulse-dashboard'))),
                 Action::make('24h')
                     ->label('Last 24 Hours')
-                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '24_hours']))),
+                    ->action(fn () => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '24_hours']))),
                 Action::make('7d')
                     ->label('Last 7 Days')
-                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '7_days']))),
+                    ->action(fn () => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '7_days']))),
             ])
                 ->label(__('Time Filter'))
                 ->icon('heroicon-m-funnel')
@@ -79,16 +79,16 @@ class PulseDashboard extends Dashboard
         return [
             // Server statistics at the top (full width)
             PulseServers::class,
-            
+
             // Three column layout for main metrics
             PulseUsage::class,
             PulseCache::class,
             PulseQueues::class,
-            
+
             // Exceptions and Slow Queries (larger widgets)
             PulseExceptions::class,
             PulseSlowQueries::class,
-            
+
             // Remaining widgets at the bottom
             PulseSlowRequests::class,
             PulseSlowOutGoingRequests::class,

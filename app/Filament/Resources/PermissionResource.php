@@ -3,9 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PermissionResource\Pages;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,7 +18,9 @@ class PermissionResource extends Resource
     protected static ?string $model = Permission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-key';
+
     protected static ?string $navigationGroup = 'Administration';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -39,7 +41,7 @@ class PermissionResource extends Resource
                         TextInput::make('guard_name')
                             ->default('web')
                             ->required(),
-                    ])
+                    ]),
             ]);
     }
 

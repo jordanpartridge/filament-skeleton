@@ -20,7 +20,6 @@ class FilamentDashboard extends BasePage
     /**
      * Assert that the browser is on the page.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function assert(Browser $browser)
@@ -46,61 +45,56 @@ class FilamentDashboard extends BasePage
     /**
      * Navigate to the users page.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function navigateToUsers(Browser $browser)
     {
         $browser->clickLink('Users')
-                ->waitForRoute('filament.admin.resources.users.index');
+            ->waitForRoute('filament.admin.resources.users.index');
     }
 
     /**
      * Navigate to the roles page.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function navigateToRoles(Browser $browser)
     {
         $browser->clickLink('Roles')
-                ->waitForRoute('filament.admin.resources.roles.index');
+            ->waitForRoute('filament.admin.resources.roles.index');
     }
 
     /**
      * Navigate to the pulse dashboard.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function navigateToPulse(Browser $browser)
     {
         $browser->clickLink('Pulse')
-                ->waitForRoute('filament.admin.pages.pulse-dashboard');
+            ->waitForRoute('filament.admin.pages.pulse-dashboard');
     }
 
     /**
      * Navigate to the user dashboard.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function navigateToUserDashboard(Browser $browser)
     {
         $browser->clickLink('User Dashboard')
-                ->waitForRoute('filament.admin.pages.user-dashboard');
+            ->waitForRoute('filament.admin.pages.user-dashboard');
     }
 
     /**
      * Logout from the application.
      *
-     * @param  Browser  $browser
      * @return void
      */
     public function logout(Browser $browser)
     {
         $browser->click('@user-menu')
-                ->clickLink('Sign out')
-                ->waitForRoute('filament.admin.auth.login');
+            ->clickLink('Sign out')
+            ->waitForRoute('filament.admin.auth.login');
     }
 }
