@@ -10,10 +10,10 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class LatestUsersWidget extends BaseWidget
 {
     protected static ?string $heading = 'Latest Users';
-    
+
     // Full width for the table
-    protected int | string | array $columnSpan = 'full';
-    
+    protected int|string|array $columnSpan = 'full';
+
     public function table(Table $table): Table
     {
         return $table

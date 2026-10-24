@@ -67,7 +67,7 @@ class UserResource extends Resource
             ->actions([
                 EditAction::make(),
                 Action::make('activities')
-                    ->url(fn($record) => UserResource::getUrl('activities', ['record' => $record])),
+                    ->url(fn ($record) => UserResource::getUrl('activities', ['record' => $record])),
 
             ])
             ->bulkActions([

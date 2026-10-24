@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 
 use function Laravel\Prompts\info;
@@ -60,7 +62,7 @@ class Install extends Command
             $url = "http://{$projectName}.test";
 
             try {
-                $response = \Illuminate\Support\Facades\Http::timeout(2)
+                $response = Http::timeout(2)
                     ->connectTimeout(2)
                     ->head($url);
 
@@ -73,7 +75,7 @@ class Install extends Command
 
                     return false;
                 }
-            } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            } catch (ConnectionException $e) {
                 info("Cannot connect to {$url}: Connection refused");
                 info('Please check if Laravel Herd is running');
 

@@ -9,16 +9,16 @@ class ServerHealthDashboard extends Dashboard
 {
     // Set the route path
     protected static string $routePath = '/server-health';
-    
+
     // Set a proper title for the page
     protected static ?string $title = 'Server Health';
-    
+
     // Set a proper navigation label
     protected static ?string $navigationLabel = 'Server Health';
-    
+
     // Place this dashboard under System Monitoring navigation group
     protected static ?string $navigationGroup = 'System Monitoring';
-    
+
     // Set the navigation sort order
     protected static ?int $navigationSort = 2;
 

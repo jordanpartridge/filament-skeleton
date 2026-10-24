@@ -2,25 +2,25 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\UserStatsWidget;
-use App\Filament\Widgets\UserSignupChartWidget; 
 use App\Filament\Widgets\LatestUsersWidget;
+use App\Filament\Widgets\UserSignupChartWidget;
+use App\Filament\Widgets\UserStatsWidget;
 use Filament\Pages\Dashboard;
 
 class UserDashboard extends Dashboard
 {
     // Set the route path
     protected static string $routePath = '/user-dashboard';
-    
+
     // Set a proper title for the page
     protected static ?string $title = 'User Management';
-    
+
     // Set a proper navigation label
     protected static ?string $navigationLabel = 'User Dashboard';
-    
+
     // Place this dashboard under User Management in the navigation
     protected static ?string $navigationGroup = 'User Management';
-    
+
     // Set the navigation sort order
     protected static ?int $navigationSort = 1;
 
@@ -40,10 +40,10 @@ class UserDashboard extends Dashboard
         return [
             // User stats widget at the top
             UserStatsWidget::class,
-            
+
             // Add user signup chart if it exists
             UserSignupChartWidget::class,
-            
+
             // Latest users at the bottom
             LatestUsersWidget::class,
         ];

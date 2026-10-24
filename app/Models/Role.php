@@ -9,6 +9,4 @@ class Role extends \Spatie\Permission\Models\Role
 {
     use LogsActivity;
     use LogsFillable;
-
-
 }

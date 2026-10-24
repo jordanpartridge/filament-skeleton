@@ -21,11 +21,10 @@ abstract class DuskTestCase extends BaseTestCase
             static::startChromeDriver(['--port=9515']);
         }
     }
-    
+
     /**
      * Create a browser instance with longer wait time.
      *
-     * @param  \Closure|null  $callback
      * @return \Laravel\Dusk\Browser|void
      */
     public function browse(?\Closure $callback = null)
@@ -33,7 +32,7 @@ abstract class DuskTestCase extends BaseTestCase
         parent::browse(function (Browser $browser) use ($callback) {
             // Set a longer default wait time for Filament UI which may have animations
             $browser->waitFor('html', 10);
-                    
+
             if ($callback) {
                 $callback($browser);
             }

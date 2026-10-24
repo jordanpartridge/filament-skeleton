@@ -17,7 +17,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('team_id')->nullable()->change();
             }
         });
-        
+
         Schema::table('model_has_permissions', function (Blueprint $table) {
             if (Schema::hasColumn('model_has_permissions', 'team_id')) {
                 $table->unsignedBigInteger('team_id')->nullable()->change();

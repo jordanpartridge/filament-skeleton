@@ -9,24 +9,24 @@ use Illuminate\Support\Facades\DB;
 class UserSignupChartWidget extends ChartWidget
 {
     protected static ?string $heading = 'User Signups';
-    
+
     // Configure widget dimensions - half width on medium screens and up
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'default' => 'full',
         'md' => 1, // Take up half the width on medium screens
     ];
-    
+
     protected function getData(): array
     {
         // Fetch signups from the last 30 days
         $users = User::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as count')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as count')
+        )
             ->where('created_at', '>=', now()->subDays(30))
             ->groupBy('date')
             ->get();
-        
+
         // Prepare data structure for the chart
         return [
             'datasets' => [
@@ -40,7 +40,7 @@ class UserSignupChartWidget extends ChartWidget
             'labels' => $users->pluck('date')->toArray(),
         ];
     }
-    
+
     protected function getType(): string
     {
         return 'line';
